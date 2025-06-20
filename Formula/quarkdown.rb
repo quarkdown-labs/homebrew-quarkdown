@@ -7,9 +7,11 @@ class Quarkdown < Formula
 
   depends_on "openjdk@17"
   depends_on "node"
+  depends_on "google-chrome"
 
   def install
       ENV["JAVA_HOME"] = Formula["openjdk@17"].opt_prefix
+      env["PUPPETEER_CHROME_SKIP_DOWNLOAD"] = "true"
 
       # Build the distribution ZIP using Gradle
       system "./gradlew", "distZip"
@@ -28,16 +30,12 @@ class Quarkdown < Formula
       # Install Puppeteer with Chromium bundled
       system "npm", "install", "-g", "puppeteer", "--prefix", libexec
 
-      chromium_path = `node -e "console.log(require('puppeteer').executablePath())"`.strip
-      odie "Chromium not found" unless File.exist?(chromium_path)
-      (libexec/"chromium-path").write chromium_path
-
       # Create the CLI wrapper
       (bin/"quarkdown").write <<~EOS
         #!/bin/bash
         export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
         export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
-        export PUPPETEER_EXECUTABLE_PATH=$(cat #{libexec}/chromium-path)
+        export PUPPETEER_EXECUTABLE_PATH="#{Formula["google-chrome"].opt_bin}/google-chrome"
         exec #{libexec}/bin/quarkdown "$@"
       EOS
       chmod 0755, bin/"quarkdown"
