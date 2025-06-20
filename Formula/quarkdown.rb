@@ -7,7 +7,7 @@ class Quarkdown < Formula
 
   depends_on "openjdk@17"
   depends_on "node"
-  depends_on "chromium" # Ensure Chromium is installed for Puppeteer
+  # depends_on "chromium" # Ensure Chromium is installed for Puppeteer
 
   def install
       ENV["JAVA_HOME"] = Formula["openjdk@17"].opt_prefix
