@@ -35,7 +35,6 @@ class Quarkdown < Formula
         #!/bin/bash
         export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
         export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
-        export PUPPETEER_EXECUTABLE_PATH="#{Formula["chromium"].opt_bin}/chromium"
         exec #{libexec}/bin/quarkdown "$@"
       EOS
       chmod 0755, bin/"quarkdown"
