@@ -11,7 +11,7 @@ class Quarkdown < Formula
 
   def install
       ENV["JAVA_HOME"] = Formula["openjdk@17"].opt_prefix
-      env["PUPPETEER_CHROME_SKIP_DOWNLOAD"] = "true"
+      ENV["PUPPETEER_CHROME_SKIP_DOWNLOAD"] = "true"
 
       # Build the distribution ZIP using Gradle
       system "./gradlew", "distZip"
