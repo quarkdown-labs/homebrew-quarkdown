@@ -9,26 +9,39 @@ class Quarkdown < Formula
   depends_on "node"
 
   def install
-    ENV["JAVA_HOME"] = Formula["openjdk@17"].opt_prefix
-    ENV["PUPPETEER_SKIP_CHROMIUM_DOWNLOAD"] = "true"
+      ENV["JAVA_HOME"] = Formula["openjdk@17"].opt_prefix
 
-    # Install to libexec
-    libexec.install Dir["*"]
+      # Build the distribution ZIP using Gradle
+      system "./gradlew", "distZip"
 
-    # Install puppeteer inside the formula directory
-    cd libexec do
+      # Find and unzip the dist output
+      dist_zip = Dir["build/distributions/*.zip"].first
+      odie "distZip output not found" unless dist_zip
+      system "unzip", dist_zip, "-d", "dist"
+
+      dist_folder = Dir["dist/*"].find { |f| File.directory?(f) }
+      odie "Unzipped dist folder not found" unless dist_folder
+
+      # Install app files
+      libexec.install Dir["#{dist_folder}/*"]
+
+      # Install Puppeteer with Chromium bundled
       system "npm", "install", "-g", "puppeteer", "--prefix", libexec
-    end
 
-    # Create a wrapper script
-    (bin/"quarkdown").write <<~EOS
-      #!/bin/bash
-      export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
-      export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
-      exec #{libexec}/bin/quarkdown "$@"
-    EOS
-    chmod 0755, bin/"quarkdown"
-  end
+      chromium_path = `#{libexec}/bin/node -e "console.log(require('puppeteer').executablePath())"`.strip
+      odie "Chromium not found" unless File.exist?(chromium_path)
+      (libexec/"chromium-path").write chromium_path
+
+      # Create the CLI wrapper
+      (bin/"quarkdown").write <<~EOS
+        #!/bin/bash
+        export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
+        export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
+        export PUPPETEER_EXECUTABLE_PATH=$(cat #{libexec}/chromium-path)
+        exec #{libexec}/bin/quarkdown "$@"
+      EOS
+      chmod 0755, bin/"quarkdown"
+    end
 
 #   def caveats
 #     <<~EOS
