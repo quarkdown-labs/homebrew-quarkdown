@@ -28,16 +28,16 @@ class Quarkdown < Formula
       # Install Puppeteer with Chromium bundled
       system "npm", "install", "-g", "puppeteer", "--prefix", libexec
 
-      #chromium_path = `#{libexec}/bin/node -e "console.log(require('puppeteer').executablePath())"`.strip
-      #odie "Chromium not found" unless File.exist?(chromium_path)
-      #(libexec/"chromium-path").write chromium_path
+      chromium_path = `node -e "console.log(require('puppeteer').executablePath())"`.strip
+      odie "Chromium not found" unless File.exist?(chromium_path)
+      (libexec/"chromium-path").write chromium_path
 
       # Create the CLI wrapper
       (bin/"quarkdown").write <<~EOS
         #!/bin/bash
         export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
         export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
-
+        export PUPPETEER_EXECUTABLE_PATH=$(cat #{libexec}/chromium-path)
         exec #{libexec}/bin/quarkdown "$@"
       EOS
       chmod 0755, bin/"quarkdown"
