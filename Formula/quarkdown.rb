@@ -7,7 +7,6 @@ class Quarkdown < Formula
 
   depends_on "openjdk@17"
   depends_on "node"
-  # depends_on "chromium" # Ensure Chromium is installed for Puppeteer
 
   def install
       ENV["JAVA_HOME"] = Formula["openjdk@17"].opt_prefix
@@ -27,7 +26,7 @@ class Quarkdown < Formula
       # Install app files
       libexec.install Dir["#{dist_folder}/*"]
 
-      # Install Puppeteer with Chromium bundled
+      # Install Puppeteer (without bundling Chrome)
       system "npm", "install", "-g", "puppeteer", "--prefix", libexec
 
       # Create the CLI wrapper
@@ -35,22 +34,29 @@ class Quarkdown < Formula
         #!/bin/bash
         export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
         export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
+        export NPM_GLOBAL_PREFIX=#{libexec}
         exec #{libexec}/bin/quarkdown "$@"
       EOS
       chmod 0755, bin/"quarkdown"
     end
 
-#   def caveats
-#     <<~EOS
-#       Puppeteer is installed locally to avoid global install issues.
-#       Chromium download is disabled. If needed, set PUPPETEER_EXECUTABLE_PATH.
-#     EOS
-#   end
+  def caveats
+    <<~EOS
+      In order to compile to PDF, Quarkdown requires Chrome, Chromium or Firefox installed.
+      If you don't have any of these browsers installed:
+
+        brew install --cask google-chrome
+
+      PDF generation will fail if a browser is not found at runtime.
+    EOS
+  end
 
   test do
       test_dir = "test"
-      system bin/"quarkdown", "create", test_dir
-      system bin/"quarkdown", "c", "#{test_dir}/test.qd"
-      assert_path_exists testpath/"output", "Output directory does not exist"
+      output_dir = "output"
+      quarkdown = bin/"quarkdown"
+      system quarkdown, "create", test_dir
+      system quarkdown, "c", "#{test_dir}/test.qd", "--output", "./#{output_dir}"
+      assert_path_exists testpath/output_dir, "Output directory does not exist"
   end
 end
