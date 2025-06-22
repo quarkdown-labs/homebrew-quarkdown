@@ -27,15 +27,15 @@ class Quarkdown < Formula
       libexec.install Dir["#{dist_folder}/*"]
 
       # Install Puppeteer (without bundling Chrome)
-      system "npm", "install", "-g", "puppeteer", "--prefix", libexec
+      system "npm", "install", "puppeteer", "--prefix", libexec/"lib"
 
       # Create the CLI wrapper
       (bin/"quarkdown").write <<~EOS
         #!/bin/bash
         export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
         export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
-        export NPM_GLOBAL_PREFIX=#{libexec}
-        export NODE_PATH=#{libexec}/lib/node_modules
+        export NPM_GLOBAL_PREFIX=#{libexec}/lib
+        export NODE_PATH=$NPM_GLOBAL_PREFIX/node_modules
         exec #{libexec}/bin/quarkdown "$@"
       EOS
       chmod 0755, bin/"quarkdown"
@@ -54,10 +54,15 @@ class Quarkdown < Formula
 
   test do
       test_dir = "test"
+      test_file = "test.qd"
       output_dir = "output"
       quarkdown = bin/"quarkdown"
-      system quarkdown, "create", test_dir
-      system quarkdown, "c", "#{test_dir}/test.qd", "--output", "./#{output_dir}"
+
+      require 'fileutils'
+      FileUtils.mkdir_p(test_dir)
+      File.write("#{test_dir}/#{test_file}", ".docname {test}")
+
+      system quarkdown, "c", "#{test_dir}/#{test_file}", "--output", "./#{output_dir}"
       assert_path_exists testpath/output_dir, "Output directory does not exist"
   end
 end
