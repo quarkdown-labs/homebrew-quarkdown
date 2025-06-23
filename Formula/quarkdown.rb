@@ -34,8 +34,7 @@ class Quarkdown < Formula
         #!/bin/bash
         export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
         export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
-        export NPM_GLOBAL_PREFIX=#{libexec}/lib
-        export NODE_PATH=$NPM_GLOBAL_PREFIX/node_modules
+        export QD_NPM_PREFIX=#{libexec}/lib
         exec #{libexec}/bin/quarkdown "$@"
       EOS
       chmod 0755, bin/"quarkdown"
