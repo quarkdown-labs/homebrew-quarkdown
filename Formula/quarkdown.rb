@@ -28,9 +28,7 @@ class Quarkdown < Formula
 
       # Install Puppeteer
       ENV["PUPPETEER_CACHE_DIR"] = HOMEBREW_CACHE/"puppeteer"
-      system "npm", "init", "-y", "--prefix", libexec/"lib"
       system "npm", "install", "--prefix", libexec/"lib", "puppeteer"
-      system "npm", "install", "--prefix", libexec/"lib/node_modules/puppeteer"
 
       # Create the CLI wrapper
       (bin/"quarkdown").write <<~EOS
