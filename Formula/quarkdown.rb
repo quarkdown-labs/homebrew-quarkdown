@@ -27,8 +27,9 @@ class Quarkdown < Formula
       libexec.install Dir["#{dist_folder}/*"]
 
       # Install Puppeteer
+      system "npm", "init", "-y", "--prefix", libexec/"lib"
       system "npm", "install", "--prefix", libexec/"lib", "puppeteer"
-      system "npx", "--yes", "puppeteer", "browsers", "install", "chrome-headless-shell"
+      system "npm", "install", "--prefix", libexec/"lib/node_modules/puppeteer"
 
       # Create the CLI wrapper
       (bin/"quarkdown").write <<~EOS
