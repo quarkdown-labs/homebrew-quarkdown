@@ -11,7 +11,6 @@ class Quarkdown < Formula
 
   def install
       ENV["JAVA_HOME"] = Formula["openjdk@17"].opt_prefix
-      ENV["PUPPETEER_CHROME_SKIP_DOWNLOAD"] = "true"
 
       # Build the distribution ZIP using Gradle
       system "./gradlew", "distZip"
@@ -40,17 +39,6 @@ class Quarkdown < Formula
       EOS
       chmod 0755, bin/"quarkdown"
     end
-
-  def caveats
-    <<~EOS
-      In order to compile to PDF, Quarkdown requires Chrome, Chromium or Firefox installed.
-      If you don't have any of these browsers installed:
-
-        brew install --cask google-chrome
-
-      PDF generation will fail if a browser is not found at runtime.
-    EOS
-  end
 
   test do
       test_dir = "test"
