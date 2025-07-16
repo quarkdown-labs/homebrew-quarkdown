@@ -28,7 +28,7 @@ class Quarkdown < Formula
 
       # Install Puppeteer
       system "npm", "install", "--prefix", libexec/"lib", "puppeteer"
-      system "node", "#{libexec}/lib/node_modules/puppeteer/install.mjs"
+      system "npx", "puppeteer", "browsers", "install", "chrome-headless-shell"
 
       # Create the CLI wrapper
       (bin/"quarkdown").write <<~EOS
