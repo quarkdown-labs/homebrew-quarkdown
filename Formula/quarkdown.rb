@@ -27,7 +27,7 @@ class Quarkdown < Formula
       libexec.install Dir["#{dist_folder}/*"]
 
       # Install Puppeteer
-      ENV["PUPPETEER_CACHE_DIR"] = libexec/"lib/puppeteer_cache"
+      ENV["PUPPETEER_CACHE_DIR"] = HOMEBREW_CACHE/"puppeteer"
       system "npm", "init", "-y", "--prefix", libexec/"lib"
       system "npm", "install", "--prefix", libexec/"lib", "puppeteer"
       system "npm", "install", "--prefix", libexec/"lib/node_modules/puppeteer"
@@ -38,7 +38,7 @@ class Quarkdown < Formula
         export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
         export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
         export QD_NPM_PREFIX=#{libexec}/lib
-        export PUPPETEER_CACHE_DIR=#{libexec}/lib/puppeteer_cache
+        export PUPPETEER_CACHE_DIR=#{HOMEBREW_CACHE}/puppeteer
         exec #{libexec}/bin/quarkdown "$@"
       EOS
       chmod 0755, bin/"quarkdown"
