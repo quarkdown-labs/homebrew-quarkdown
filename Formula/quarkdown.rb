@@ -26,8 +26,11 @@ class Quarkdown < Formula
       # Install app files
       libexec.install Dir["#{dist_folder}/*"]
 
-      # Install Puppeteer (without bundling Chrome)
-      system "npm", "install", "puppeteer", "--prefix", libexec/"lib"
+      # Install Puppeteer
+      Dir.chdir(libexec/"lib") do
+        system "npm", "init", "-y"
+        system "npm", "install", "puppeteer"
+      end
 
       # Create the CLI wrapper
       (bin/"quarkdown").write <<~EOS
