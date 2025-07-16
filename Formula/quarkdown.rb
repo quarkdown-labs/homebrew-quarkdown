@@ -1,9 +1,9 @@
 class Quarkdown < Formula
   desc "A modern Markdown-based typesetting system"
   homepage "https://github.com/iamgio/quarkdown"
-  version "1.6.3"
-  url "https://github.com/iamgio/quarkdown/archive/refs/tags/v1.6.3.tar.gz"
-  sha256 "63a33310e41f231180bca81e37a9b787a70c63cd1e4c4523b29ba98cf7054b1f"
+  version "1.7.0"
+  url "https://github.com/iamgio/quarkdown/archive/refs/tags/v1.7.0.tar.gz"
+  sha256 "dbbdca6335b3adb4176dec1a3ad2ccc5dcf02d2d607c9e8afc9152561baa7aef"
   license "GPL-3.0"
 
   depends_on "openjdk@17"
