@@ -30,6 +30,7 @@ class Quarkdown < Formula
       Dir.chdir(libexec/"lib") do
         system "npm", "init", "-y"
         system "npm", "install", "puppeteer"
+        system "node", "node_modules/puppeteer/install.mjs"
       end
 
       # Create the CLI wrapper
