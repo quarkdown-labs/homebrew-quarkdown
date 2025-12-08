@@ -13,7 +13,7 @@ class Quarkdown < Formula
       ENV["JAVA_HOME"] = Formula["openjdk@17"].opt_prefix
 
       # Build the distribution ZIP using Gradle
-      system "./gradlew", "distZip"
+      system "./gradlew", "distZip", "--no-daemon"
 
       # Find and unzip the dist output
       dist_zip = Dir["build/distributions/*.zip"].first
