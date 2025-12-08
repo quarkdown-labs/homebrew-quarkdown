@@ -2,45 +2,32 @@ class Quarkdown < Formula
   desc "A modern Markdown-based typesetting system"
   homepage "https://github.com/iamgio/quarkdown"
   version "1.12.1"
-  url "https://github.com/iamgio/quarkdown/archive/refs/tags/v1.12.1.tar.gz"
-  sha256 "09803b423421dd1e69f3a70d85474583bf3a329041c086b07818841de7e3d792"
+  url "https://github.com/iamgio/quarkdown/releases/download/v1.12.1/quarkdown.zip"
+  sha256 "a6116fa9d27f844fde533fb3a1d119096f0ecdd28c68ef06540f0d558d6939b2"
   license "GPL-3.0"
 
   depends_on "openjdk@17"
   depends_on "node"
 
   def install
-      ENV["JAVA_HOME"] = Formula["openjdk@17"].opt_prefix
+    # Install pre-built app files (bin/ and lib/) from the extracted zip
+    libexec.install Dir["*"]
 
-      # Build the distribution ZIP using Gradle
-      system "./gradlew", "distZip", "--no-daemon"
+    # Install Puppeteer
+    ENV["PUPPETEER_CACHE_DIR"] = HOMEBREW_CACHE/"puppeteer"
+    system "npm", "install", "--prefix", libexec/"lib", "puppeteer"
 
-      # Find and unzip the dist output
-      dist_zip = Dir["build/distributions/*.zip"].first
-      odie "distZip output not found" unless dist_zip
-      system "unzip", dist_zip, "-d", "dist"
-
-      dist_folder = Dir["dist/*"].find { |f| File.directory?(f) }
-      odie "Unzipped dist folder not found" unless dist_folder
-
-      # Install app files
-      libexec.install Dir["#{dist_folder}/*"]
-
-      # Install Puppeteer
-      ENV["PUPPETEER_CACHE_DIR"] = HOMEBREW_CACHE/"puppeteer"
-      system "npm", "install", "--prefix", libexec/"lib", "puppeteer"
-
-      # Create the CLI wrapper
-      (bin/"quarkdown").write <<~EOS
-        #!/bin/bash
-        export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
-        export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
-        export QD_NPM_PREFIX=#{libexec}/lib
-        export PUPPETEER_CACHE_DIR=#{HOMEBREW_CACHE}/puppeteer
-        exec #{libexec}/bin/quarkdown "$@"
-      EOS
-      chmod 0755, bin/"quarkdown"
-    end
+    # Create the CLI wrapper
+    (bin/"quarkdown").write <<~EOS
+      #!/bin/bash
+      export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
+      export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
+      export QD_NPM_PREFIX=#{libexec}/lib
+      export PUPPETEER_CACHE_DIR=#{HOMEBREW_CACHE}/puppeteer
+      exec #{libexec}/bin/quarkdown "$@"
+    EOS
+    chmod 0755, bin/"quarkdown"
+  end
 
   test do
       test_dir = "test"
