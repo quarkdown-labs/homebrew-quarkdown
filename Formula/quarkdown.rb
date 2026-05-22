@@ -2,7 +2,7 @@ class Quarkdown < Formula
   desc "A modern Markdown-based typesetting system"
   homepage "https://github.com/iamgio/quarkdown"
   version "2.0.1"
-  url "https://github.com/iamgio/quarkdown/releases/download/v2.0.1/quarkdown.zip"
+  url "https://github.com/iamgio/quarkdown/releases/download/v2.0.1/quarkdown-macos-x64.zip"
   sha256 "8c8c974955460f714a97518d8ba96360e0037cea502b05400bb38d1e2748540d"
   license "GPL-3.0"
 
