@@ -6,7 +6,6 @@ class Quarkdown < Formula
   sha256 "8c8c974955460f714a97518d8ba96360e0037cea502b05400bb38d1e2748540d"
   license "GPL-3.0"
 
-  depends_on "openjdk@17"
   depends_on "node"
 
   def install
@@ -20,7 +19,6 @@ class Quarkdown < Formula
     # Create the CLI wrapper
     (bin/"quarkdown").write <<~EOS
       #!/bin/bash
-      export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
       export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
       export QD_NPM_PREFIX=#{libexec}/lib
       export PUPPETEER_CACHE_DIR=#{HOMEBREW_CACHE}/puppeteer
