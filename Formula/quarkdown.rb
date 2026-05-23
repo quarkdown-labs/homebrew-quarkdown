@@ -6,12 +6,12 @@ class Quarkdown < Formula
 
   on_arm do
     url "https://github.com/iamgio/quarkdown/releases/download/v2.1.0/quarkdown-macos-aarch64.zip"
-    sha256 "3cc7f690515e7e92c56864fca9b105a07f01494be374e941fc80610537cc274d"
+    sha256 "5b337eb2ad50bf2589c8eaceef9da6c824ecb1e9cf9c936ab838d87640c1932e"
   end
 
   on_intel do
     url "https://github.com/iamgio/quarkdown/releases/download/v2.1.0/quarkdown-macos-x64.zip"
-    sha256 "6201dda507fbdf5d28122b8559287457503eead8249f42f179325fc512deda5b"
+    sha256 "3a32ecc97f20df1dc56327d0b18f41c6fd80ff5b0957e148dc962399605e4248"
   end
 
   depends_on "node"
