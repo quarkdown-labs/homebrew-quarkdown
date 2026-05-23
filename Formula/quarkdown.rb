@@ -2,11 +2,18 @@ class Quarkdown < Formula
   desc "A modern Markdown-based typesetting system"
   homepage "https://github.com/iamgio/quarkdown"
   version "2.0.1"
-  url "https://github.com/iamgio/quarkdown/releases/download/v2.0.1/quarkdown.zip"
-  sha256 "8c8c974955460f714a97518d8ba96360e0037cea502b05400bb38d1e2748540d"
   license "GPL-3.0"
 
-  depends_on "openjdk@17"
+  on_arm do
+    url "https://github.com/iamgio/quarkdown/releases/download/v2.0.1/quarkdown-macos-aarch64.zip"
+    sha256 "8c8c974955460f714a97518d8ba96360e0037cea502b05400bb38d1e2748540d"
+  end
+
+  on_intel do
+    url "https://github.com/iamgio/quarkdown/releases/download/v2.0.1/quarkdown-macos-x64.zip"
+    sha256 "8c8c974955460f714a97518d8ba96360e0037cea502b05400bb38d1e2748540d"
+  end
+
   depends_on "node"
 
   def install
@@ -20,7 +27,6 @@ class Quarkdown < Formula
     # Create the CLI wrapper
     (bin/"quarkdown").write <<~EOS
       #!/bin/bash
-      export JAVA_HOME=#{Formula["openjdk@17"].opt_prefix}
       export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
       export QD_NPM_PREFIX=#{libexec}/lib
       export PUPPETEER_CACHE_DIR=#{HOMEBREW_CACHE}/puppeteer
