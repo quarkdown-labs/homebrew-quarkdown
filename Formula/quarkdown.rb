@@ -20,6 +20,11 @@ class Quarkdown < Formula
     # Install pre-built app files (bin/ and lib/) from the extracted zip
     libexec.install Dir["*"]
 
+    # The bundled runtime is built via cross-compiled jlink on Linux, so its
+    # Mach-O binaries arrive unsigned. Apple Silicon refuses to execute native
+    # code without at least an ad-hoc signature, so re-sign the runtime here.
+    system "codesign", "--force", "--deep", "--sign", "-", libexec/"runtime"
+
     # Install Puppeteer
     ENV["PUPPETEER_CACHE_DIR"] = HOMEBREW_CACHE/"puppeteer"
     system "npm", "install", "--prefix", libexec/"lib", "puppeteer"
