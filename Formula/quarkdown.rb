@@ -15,6 +15,7 @@ class Quarkdown < Formula
   end
 
   depends_on "node"
+  depends_on :macos
 
   def install
     # Install pre-built app files (bin/ and lib/) from the extracted zip
