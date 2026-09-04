@@ -21,8 +21,6 @@ class Quarkdown < Formula
     sha256 "5751ab608fcb4daa2ec857a3368c029beed5429554ae0bdd95c660b2706269e9"
   end
 
-  depends_on "node"
-
   def install
     # Install pre-built app files (bin/ and lib/) from the extracted zip
     libexec.install Dir["*"]
@@ -37,16 +35,11 @@ class Quarkdown < Formula
       system "tar", "-czf", "runtime-stash.tar.gz", "runtime"
     end
 
-    # Install Puppeteer
-    ENV["PUPPETEER_CACHE_DIR"] = HOMEBREW_CACHE/"puppeteer"
-    system "npm", "install", "--prefix", libexec/"lib", "puppeteer"
-
     # Create the CLI wrapper
     (bin/"quarkdown").write <<~EOS
       #!/bin/bash
-      export PATH=#{Formula["node"].opt_bin}:#{libexec}/bin:$PATH
-      export QD_NPM_PREFIX=#{libexec}/lib
-      export PUPPETEER_CACHE_DIR=#{HOMEBREW_CACHE}/puppeteer
+      export PATH=#{libexec}/bin:$PATH
+      export QD_CHROME_PATH=#{headless_shell_root}/chrome-headless-shell-#{headless_shell_platform}/chrome-headless-shell
       exec #{libexec}/bin/quarkdown "$@"
     EOS
     chmod 0755, bin/"quarkdown"
@@ -59,6 +52,35 @@ class Quarkdown < Formula
       system "tar", "-xzf", "runtime-stash.tar.gz"
       rm "runtime-stash.tar.gz"
     end
+
+    install_headless_shell
+  end
+
+  # Chrome for Testing platform identifier of the current host.
+  def headless_shell_platform
+    if OS.mac?
+      Hardware::CPU.arm? ? "mac-arm64" : "mac-x64"
+    else
+      "linux64"
+    end
+  end
+
+  # Directory the chrome-headless-shell bundle is extracted into.
+  def headless_shell_root
+    libexec/"chrome-headless-shell"
+  end
+
+  # Downloads chrome-headless-shell, the headless browser required for PDF export,
+  # via the installer script shipped with the distribution (which pins its version).
+  def install_headless_shell
+    script = libexec/"scripts/install-chrome.sh"
+    unless script.exist?
+      opoo "This Quarkdown release does not ship a browser installer. PDF export may require a manual browser setup."
+      return
+    end
+
+    rm_rf headless_shell_root
+    system "bash", script, headless_shell_root
   end
 
   test do
