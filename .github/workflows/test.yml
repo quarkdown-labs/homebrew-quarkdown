@@ -20,9 +20,15 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      # No credentials are persisted or handed to brew: the workflow only reads
+      # public release assets, and formula code from PRs must not see tokens.
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - uses: Homebrew/actions/setup-homebrew@main
+        with:
+          brew-gh-api-token: ""
 
       - name: Point formula at the latest devbuild
         run: |
