@@ -1,0 +1,64 @@
+name: Test formula against devbuild
+
+# Installs the formula with its download sources swapped to Quarkdown's `latest`
+# devbuild release, then smoke-tests HTML and PDF compilation.
+# This validates formula changes before a stable release ships them.
+# See quarkdown-labs/installation-tests for the equivalent tests against real releases.
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Point formula at the latest devbuild
+        run: |
+          case "$(uname -s)-$(uname -m)" in
+            Darwin-arm64)  ASSET="quarkdown-macos-aarch64.zip" ;;
+            Darwin-x86_64) ASSET="quarkdown-macos-x64.zip" ;;
+            Linux-*)       ASSET="quarkdown-linux-x64.zip" ;;
+          esac
+          URL="https://github.com/iamgio/quarkdown/releases/download/latest/$ASSET"
+          SHA=$(curl -fsSL "$URL" | shasum -a 256 | cut -d' ' -f1)
+          # Only the current platform's block is evaluated, so every source can be replaced.
+          perl -pi -e "s|url \".*\"|url \"$URL\"|g; s|sha256 \".*\"|sha256 \"$SHA\"|g" Formula/quarkdown.rb
+          grep -E 'url|sha256' Formula/quarkdown.rb
+
+      - name: Install formula
+        run: brew install quarkdown-labs/quarkdown/quarkdown
+
+      - name: Run formula test
+        run: brew test quarkdown-labs/quarkdown/quarkdown
+
+      - name: Smoke test HTML and PDF export
+        run: |
+          echo ".docname {test}" > main.qd
+
+          quarkdown c main.qd -o ./output
+
+          ls ./output
+          if [ ! -d "./output/test" ]; then
+            echo "Output directory not found" >&2
+            exit 1
+          fi
+
+          quarkdown c main.qd -o ./output --pdf --pdf-no-sandbox
+
+          ls ./output
+          if [ ! -f "./output/test.pdf" ]; then
+            echo "Output PDF not found" >&2
+            exit 1
+          fi
