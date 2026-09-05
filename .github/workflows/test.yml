@@ -55,7 +55,7 @@ jobs:
             exit 1
           fi
 
-          quarkdown c main.qd -o ./output --pdf --pdf-no-sandbox
+          quarkdown c main.qd -o ./output --pdf
 
           ls ./output
           if [ ! -f "./output/test.pdf" ]; then
