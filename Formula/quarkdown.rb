@@ -93,7 +93,7 @@ class Quarkdown < Formula
       FileUtils.mkdir_p(test_dir)
       File.write("#{test_dir}/#{test_file}", ".docname {test}")
 
-      system quarkdown, "c", "#{test_dir}/#{test_file}", "--output", "./#{output_dir}"
+      system quarkdown, "c", "#{test_dir}/#{test_file}", "-o", "./#{output_dir}"
       assert_path_exists testpath/output_dir, "Output directory does not exist"
   end
 end
