@@ -1,24 +1,24 @@
 class Quarkdown < Formula
   desc "A modern Markdown-based typesetting system"
   homepage "https://github.com/iamgio/quarkdown"
-  version "2.6.1"
+  version "2.6.2"
   license "GPL-3.0"
 
   on_macos do
     on_arm do
-      url "https://github.com/iamgio/quarkdown/releases/download/v2.6.1/quarkdown-macos-aarch64.zip"
-      sha256 "c451111c0504a7e0452b939cefd14eeb84034dc6fad0cfb4718f7b05e0a6c39f"
+      url "https://github.com/iamgio/quarkdown/releases/download/v2.6.2/quarkdown-macos-aarch64.zip"
+      sha256 "3b11d2b61c1f5ca33b5b0e0102e71202d3f37bb0538aca719b88930cf40fa3ca"
     end
 
     on_intel do
-      url "https://github.com/iamgio/quarkdown/releases/download/v2.6.1/quarkdown-macos-x64.zip"
-      sha256 "7a0c8123ccf5cda00a6a97a14066e5aff0ce165426db24f4d9076247ef180261"
+      url "https://github.com/iamgio/quarkdown/releases/download/v2.6.2/quarkdown-macos-x64.zip"
+      sha256 "043e4162589221b5e4b909eebe7d63399942728af75d931f9dadb3cc06f67edc"
     end
   end
 
   on_linux do
-    url "https://github.com/iamgio/quarkdown/releases/download/v2.6.1/quarkdown-linux-x64.zip"
-    sha256 "635402945449a7992a555d4e42854a6af340a2e3be8b0e246674703af4b345c8"
+    url "https://github.com/iamgio/quarkdown/releases/download/v2.6.2/quarkdown-linux-x64.zip"
+    sha256 "84314977298511662c3053f7c1d24c0236ff19c5baa07807142fc034d7ae24fa"
   end
 
   def install
