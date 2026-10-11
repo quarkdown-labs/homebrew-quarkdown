@@ -17,8 +17,15 @@ class Quarkdown < Formula
   end
 
   on_linux do
-    url "https://github.com/iamgio/quarkdown/releases/download/v2.6.4/quarkdown-linux-x64.zip"
-    sha256 "b2ec84dbae47925a2db92aa3bc085ee8aec03fec69b82629d8619164bfd75b02"
+    on_arm do
+      url "https://github.com/iamgio/quarkdown/releases/download/v2.6.4/quarkdown-linux-aarch64.zip"
+      sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+    end
+
+    on_intel do
+      url "https://github.com/iamgio/quarkdown/releases/download/v2.6.4/quarkdown-linux-x64.zip"
+      sha256 "b2ec84dbae47925a2db92aa3bc085ee8aec03fec69b82629d8619164bfd75b02"
+    end
   end
 
   def install
